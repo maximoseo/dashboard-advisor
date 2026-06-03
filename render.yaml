@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: dashboard-advisor
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+      - key: PORT
+        value: "3000"
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_TABLE
+        value: suggestions
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: PAPERCLIP_URL
+        sync: false
+      - key: PAPERCLIP_TASK_PATH
+        value: /api/tasks
+      - key: PAPERCLIP_COMPANY_ID
+        sync: false
+      - key: PAPERCLIP_API_KEY
+        sync: false
+      - key: PAPERCLIP_AGENT_CLAUDE
+        sync: false
+      - key: PAPERCLIP_AGENT_CODEX
+        sync: false
+      - key: PAPERCLIP_AGENT_DESIGNER
+        sync: false
+      - key: PAPERCLIP_AGENT_PLANNER
+        sync: false
