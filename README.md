@@ -34,9 +34,9 @@ public/widget.js     Self-contained floating widget (dark theme, responsive)
 | GET    | `/widget.js`        | Serves the widget JS (CORS-enabled, cacheable)     |
 | GET    | `/api/dashboards`   | Lists all configured dashboards                    |
 | POST   | `/api/analyze`      | Analyzes a dashboard's repo, stores + returns tips |
-| GET    | `/api/suggestions`  | Reads suggestions from Supabase                    |
+| GET    | `/api/suggestions/:dashboardId` | Reads suggestions from Supabase (also `?dashboardId=`) |
 | POST   | `/api/execute`      | Sends a suggestion to Paperclip as a task          |
-| GET    | `/health`           | Health check + integration status                  |
+| GET    | `/api/health`       | Health check + integration status (alias: `/health`) |
 
 `POST /api/analyze` body: `{ "dashboardId": "telegram-bots-dashboard" }`
 `POST /api/execute` body: `{ "id": "<supabase-suggestion-id>" }`
@@ -47,11 +47,11 @@ public/widget.js     Self-contained floating widget (dark theme, responsive)
 <script
   src="https://your-advisor.onrender.com/widget.js"
   data-dashboard-id="telegram-bots-dashboard"
-  data-api="https://your-advisor.onrender.com"></script>
+  data-advisor-url="https://your-advisor.onrender.com"></script>
 ```
 
-The widget reads `data-dashboard-id` and `data-api` from its own script tag, works on
-mobile, and degrades gracefully if the advisor API is down.
+The widget reads `data-dashboard-id` and `data-advisor-url` (alias: `data-api`) from its
+own script tag, works on mobile, and degrades gracefully if the advisor API is down.
 
 ## Configuration
 

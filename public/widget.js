@@ -5,8 +5,8 @@
  *           data-dashboard-id="telegram-bots-dashboard"
  *           data-api="https://your-advisor"></script>
  *
- * Reads `data-dashboard-id` and `data-api` from its own <script> tag.
- * Degrades gracefully if the advisor API is unreachable.
+ * Reads `data-dashboard-id` and `data-advisor-url` (alias: `data-api`) from its
+ * own <script> tag. Degrades gracefully if the advisor API is unreachable.
  */
 (function () {
   'use strict';
@@ -20,7 +20,10 @@
     })();
 
   var DASHBOARD_ID = (script && script.getAttribute('data-dashboard-id')) || '';
-  var API = (script && script.getAttribute('data-api')) || '';
+  var API =
+    (script &&
+      (script.getAttribute('data-advisor-url') || script.getAttribute('data-api'))) ||
+    '';
   // If no API given, assume the advisor served this script.
   if (!API && script && script.src) {
     try {

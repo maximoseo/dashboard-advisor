@@ -93,21 +93,25 @@ app.post('/api/analyze', async (req, res) => {
 });
 
 // -------------------------------------------------------------------------
-// 4. GET /api/suggestions — read suggestions from Supabase
-//    Query: ?dashboardId=...&status=...
+// 4. GET /api/suggestions — read suggestions from Supabase.
+//    Supports both /api/suggestions/:dashboardId (path) and
+//    /api/suggestions?dashboardId=...&status=... (query).
 // -------------------------------------------------------------------------
-app.get('/api/suggestions', async (req, res) => {
+async function handleSuggestions(req, res) {
   try {
     if (!supabase.isConfigured()) {
       return res.json({ suggestions: [], note: 'Supabase not configured' });
     }
-    const { dashboardId, status } = req.query;
+    const dashboardId = req.params.dashboardId || req.query.dashboardId;
+    const { status } = req.query;
     const suggestions = await supabase.getSuggestions({ dashboardId, status });
     res.json({ suggestions });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-});
+}
+app.get('/api/suggestions/:dashboardId', handleSuggestions);
+app.get('/api/suggestions', handleSuggestions);
 
 // -------------------------------------------------------------------------
 // 5. POST /api/execute — send a suggestion to Paperclip as a task
@@ -152,9 +156,9 @@ app.post('/api/execute', async (req, res) => {
 });
 
 // -------------------------------------------------------------------------
-// 6. GET /health — health check
+// 6. GET /api/health (and /health alias) — health check
 // -------------------------------------------------------------------------
-app.get('/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({
     status: 'ok',
     service: 'dashboard-advisor',
@@ -177,7 +181,7 @@ app.get('/', (req, res) => {
       `<h1>💡 Dashboard Advisor</h1>` +
       `<p>Analyzes dashboards and suggests improvements. Embed the widget with:</p>` +
       `<pre style="background:#111827;padding:16px;border-radius:8px;overflow:auto">` +
-      `&lt;script src="/widget.js" data-dashboard-id="my-dashboard" data-api="${''}"&gt;&lt;/script&gt;</pre>` +
+      `&lt;script src="https://this-advisor/widget.js" data-dashboard-id="my-dashboard" data-advisor-url="https://this-advisor"&gt;&lt;/script&gt;</pre>` +
       `<p>Endpoints: <code>/api/dashboards</code>, <code>/api/analyze</code>, ` +
       `<code>/api/suggestions</code>, <code>/api/execute</code>, <code>/health</code></p>` +
       `</body>`
